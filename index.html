@@ -238,6 +238,42 @@
     #chat-send { background: var(--pink); border: none; border-radius: 3px; padding: 0.55rem 1rem; color: white; cursor: pointer; font-size: 0.9rem; transition: background 0.2s; }
     #chat-send:hover { background: #ff2da0; }
 
+    /* GALLERY */
+    .gallery { background: var(--black); }
+    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+    .album-card { background: var(--card); border: 1px solid rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; text-decoration: none; color: var(--white); display: block; transition: border-color 0.3s, transform 0.3s; }
+    .album-card:hover { border-color: rgba(233,30,140,0.4); transform: translateY(-4px); }
+    .album-cover {
+      height: 180px; position: relative; display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .album-cover-bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(233,30,140,0.25), rgba(155,39,212,0.2), rgba(0,212,255,0.1));
+    }
+    .album-cover-pattern {
+      position: absolute; inset: 0; opacity: 0.05;
+      background-image: repeating-linear-gradient(45deg, var(--pink) 0, var(--pink) 1px, transparent 0, transparent 50%);
+      background-size: 12px 12px;
+    }
+    .album-cover-icon { position: relative; z-index: 1; font-size: 3rem; filter: drop-shadow(0 0 20px rgba(233,30,140,0.6)); }
+    .album-cover-count { position: absolute; bottom: 0.8rem; right: 1rem; font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(244,240,255,0.5); z-index: 1; }
+    .album-cover::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,15,24,0.8), transparent 50%); }
+    .album-info { padding: 1.3rem 1.5rem; }
+    .album-date { font-size: 0.72rem; letter-spacing: 0.2em; color: var(--cyan); text-transform: uppercase; margin-bottom: 0.4rem; }
+    .album-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+    .album-link { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--pink); margin-top: 0.6rem; transition: gap 0.2s; }
+    .album-card:hover .album-link { gap: 0.7rem; }
+
+    /* TEAM */
+    .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+    .team-card { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 4px; padding: 2rem; text-align: center; transition: border-color 0.3s; }
+    .team-card:hover { border-color: rgba(233,30,140,0.3); }
+    .team-avatar { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, var(--pink), var(--purple)); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 1rem; box-shadow: 0 0 20px rgba(233,30,140,0.3); }
+    .team-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.05em; margin-bottom: 0.3rem; }
+    .team-role { font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--pink); margin-bottom: 0.8rem; }
+    .team-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+
     @media (max-width: 900px) {
       nav { padding: 1rem 1.5rem; }
       .nav-links { display: none; }
@@ -259,6 +295,7 @@
     <a href="#" class="nav-logo"><img src="F3-Logo.png" alt="F³" /></a>
     <ul class="nav-links">
       <li><a href="#events">Events</a></li>
+      <li><a href="#gallery">Galerie</a></li>
       <li><a href="#reviews">Bewertungen</a></li>
       <li><a href="#about">Über uns</a></li>
       <li><a href="#concept">Konzept</a></li>
@@ -305,7 +342,10 @@
         <div class="event-date">30.05.2026 · Ulm</div>
         <div class="event-title">Friendly Fucks – Ulm</div>
         <div class="event-desc">Soft Energy Edition. Sinnlichkeit, Sauna, Whirlpool und ein kuratierter Abend für ca. 40 Gäste – inklusive Dare Game Night.</div>
-        <span class="event-tag">Ulm</span>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <span class="event-tag">Ulm</span>
+          <span class="event-tag" style="border-color:rgba(0,212,255,0.4);color:var(--cyan);">by Kristina</span>
+        </div>
       </a>
       <a href="https://www.joyclub.de/event/1824056.f_mallorca_edition_hot_n_dirty_week_koeln.html" target="_blank" class="event-card reveal">
         <div class="event-date">18.–23.07.2026 · Mallorca</div>
@@ -337,6 +377,59 @@
       </a>
     </div>
   </div>
+
+  <!-- GALLERY -->
+  <section class="gallery" id="gallery">
+    <div class="reveal">
+      <p class="section-label">Impressionen</p>
+      <h2 class="section-title">Unsere <span class="gradient-text">Galerie</span></h2>
+    </div>
+    <div class="gallery-grid">
+      <a href="https://www.joyclub.de/party/fotoalbum/13140845-4654787.f3.html" target="_blank" class="album-card reveal">
+        <div class="album-cover">
+          <div class="album-cover-bg"></div>
+          <div class="album-cover-pattern"></div>
+          <div class="album-cover-icon">🎂</div>
+          <span class="album-cover-count">Album ansehen →</span>
+        </div>
+        <div class="album-info">
+          <div class="album-date">24.01.2026 · Geheim-Location</div>
+          <div class="album-title">F³ Birthday-Bash</div>
+          <div style="font-size:0.85rem;color:var(--muted);line-height:1.5;">FriendsFuckFriends – Cum to our Birthday. Die Bilder sprechen für sich.</div>
+          <div class="album-link">Fotos auf Joyclub ansehen →</div>
+        </div>
+      </a>
+      <a href="https://www.joyclub.de/party/fotoalbum/13140845-4599506.f3.html" target="_blank" class="album-card reveal">
+        <div class="album-cover">
+          <div class="album-cover-bg" style="background:linear-gradient(135deg,rgba(0,212,255,0.2),rgba(155,39,212,0.2),rgba(233,30,140,0.15));"></div>
+          <div class="album-cover-pattern"></div>
+          <div class="album-cover-icon">🥂</div>
+          <span class="album-cover-count">Album ansehen →</span>
+        </div>
+        <div class="album-info">
+          <div class="album-date">31.12.2025 · Frankfurt</div>
+          <div class="album-title">Silvester 2025</div>
+          <div style="font-size:0.85rem;color:var(--muted);line-height:1.5;">Frankfurt Vibe – Cum in 2026. Das neue Jahr begann, wie es weitermachen soll.</div>
+          <div class="album-link">Fotos auf Joyclub ansehen →</div>
+        </div>
+      </a>
+      <a href="https://www.joyclub.de/party/fotoalbum/13140845-4640887.f3.html" target="_blank" class="album-card reveal">
+        <div class="album-cover">
+          <div class="album-cover-bg" style="background:linear-gradient(135deg,rgba(255,107,26,0.2),rgba(233,30,140,0.2),rgba(155,39,212,0.1));"></div>
+          <div class="album-cover-pattern"></div>
+          <div class="album-cover-icon">🔥</div>
+          <span class="album-cover-count">Album ansehen →</span>
+        </div>
+        <div class="album-info">
+          <div class="album-date">F³ Memories</div>
+          <div class="album-title">F³ Moments</div>
+          <div style="font-size:0.85rem;color:var(--muted);line-height:1.5;">Die besten Momente – handverlesen, unvergesslich, echt.</div>
+          <div class="album-link">Fotos auf Joyclub ansehen →</div>
+        </div>
+      </a>
+    </div>
+    <p style="margin-top:2rem;font-size:0.8rem;color:var(--muted);letter-spacing:0.1em;">📸 Fotos sind nur für eingeloggte Joyclub-Mitglieder sichtbar.</p>
+  </section>
 
   <!-- REVIEWS -->
   <section class="reviews" id="reviews">
@@ -414,6 +507,28 @@
     </div>
   </section>
 
+  <!-- TEAM -->
+  <section style="background:var(--deep);padding:5rem 4rem;" id="team">
+    <div class="reveal">
+      <p class="section-label">Hinter F³</p>
+      <h2 class="section-title">Das <span class="gradient-text">Team.</span></h2>
+    </div>
+    <div class="team-grid">
+      <div class="team-card reveal">
+        <div class="team-avatar">🔥</div>
+        <div class="team-name">Tobias</div>
+        <div class="team-role">Gründer · FriendsFuckFriends</div>
+        <p class="team-desc">Der Kopf hinter F³. Tobias gründete FriendsFuckFriends mit dem Ziel, Räume zu schaffen, in denen mindestens 80% der Gäste sich untereinander kennen – authentisch, sicher, intensiv.</p>
+      </div>
+      <div class="team-card reveal">
+        <div class="team-avatar" style="background:linear-gradient(135deg,var(--cyan),var(--purple));">💜</div>
+        <div class="team-name">Kristina</div>
+        <div class="team-role">Rechte Hand · Friendly Fucks</div>
+        <p class="team-desc">Kristina kümmert sich um die Friendly Fucks Events. Kleinere, intimere Formate in neuen Städten – unter 50 Gäste, neue Vibes, gleiche Werte. Ihr Herzstück: Ulm und darüber hinaus.</p>
+      </div>
+    </div>
+  </section>
+
   <section class="concept" id="concept">
     <div class="reveal">
       <p class="section-label">Das Konzept</p>
@@ -421,19 +536,34 @@
     </div>
     <div class="concept-grid">
       <div class="concept-card reveal">
-        <div class="concept-icon">👥</div>
-        <h3>Handverlesener Gästemix</h3>
-        <p>Leichter Herrenüberschuss – den Ladies soll nicht langweilig werden. Nur Menschen, die harmonieren: Paare, Solo-Ladys, entspannte Gentlemen.</p>
+        <div class="concept-icon">🔥</div>
+        <h3>FriendsFuckFriends</h3>
+        <p>Das Kern-Format von Tobias. Mindestens 80% der Gäste kennen sich untereinander. Ca. 80 Gäste, handverlesen, Ladies' Choice Voting – das Original.</p>
       </div>
       <div class="concept-card reveal">
         <div class="concept-icon">💜</div>
-        <h3>Ladies' Choice</h3>
-        <p>Der Gästemix ist das Herz jeder Nacht. Die Ladies entscheiden mit – demokratisch, fair und mit Stil. Mindestens 5 Stimmen oder 50% Ja.</p>
+        <h3>Friendly Fucks</h3>
+        <p>Das kleinere Schwesterformat, geleitet von Kristina. Unter 50 Gäste, neue Städte, intimere Atmosphäre – Sauna, Whirlpool, Dare Game Night. Gleiche Werte, neuer Vibe.</p>
+      </div>
+      <div class="concept-card reveal">
+        <div class="concept-icon">👥</div>
+        <h3>Ladies' Choice Voting</h3>
+        <p>Alle angemeldeten Damen stimmen über Männer & Paare ab. Mindestens 5 Ja-Stimmen oder 50% positive Votes. Ein einzelnes Veto schließt niemanden aus – klar, fair, demokratisch.</p>
+      </div>
+      <div class="concept-card reveal">
+        <div class="concept-icon">🔒</div>
+        <h3>Voting-Regeln</h3>
+        <p>Der Voting-Kanal ist ein moderierter Vertrauensraum. Keine Screenshots, keine Namen nach außen, kein Weitergeben des Links. Ein Nein braucht keine Erklärung.</p>
       </div>
       <div class="concept-card reveal">
         <div class="concept-icon">🛡️</div>
         <h3>Safe Space</h3>
-        <p>F³ fühlt sich an wie ein privater, sicherer Raum: offen, sinnlich, intensiv – aber nie übergriffig. Null Toleranz für Grenzüberschreitungen.</p>
+        <p>Nein ist Nein – immer und ohne Ausnahme. Null Toleranz für Grenzüberschreitungen. Wer sich daneben benimmt, wird dauerhaft ausgeschlossen.</p>
+      </div>
+      <div class="concept-card reveal">
+        <div class="concept-icon">🖤</div>
+        <h3>Gesundheit & Verantwortung</h3>
+        <p>Regelmäßiges Testen ist ein Akt der Selbstverantwortung und des gegenseitigen Respekts. Respekt endet nicht auf der Tanzfläche.</p>
       </div>
     </div>
   </section>
@@ -472,6 +602,7 @@
       <div class="value-row reveal"><div class="value-idx">02</div><div class="value-name">Klare Grenzen</div><div class="value-desc">Nein ist Nein – immer und ohne Ausnahme. Bei F³ weiß jeder, wo die Linie verläuft, und das schafft echte Freiheit.</div></div>
       <div class="value-row reveal"><div class="value-idx">03</div><div class="value-name">Humor & Leichtigkeit</div><div class="value-desc">F³ lebt von Humor, Spontanität und Leichtigkeit. Wir nehmen uns ernst, aber nicht zu ernst.</div></div>
       <div class="value-row reveal"><div class="value-idx">04</div><div class="value-name">Verantwortung</div><div class="value-desc">Jeder trägt Verantwortung für die Atmosphäre – bewusster Umgang mit Gesundheit, Grenzen und Wohlbefinden.</div></div>
+      <div class="value-row reveal"><div class="value-idx">05</div><div class="value-name">Gesundheit</div><div class="value-desc">Regelmäßiges Testen (alle 3–6 Monate) ist kein Extra, sondern Teil unserer Community. Kostenlos & anonym beim Gesundheitsamt oder diskret über S.A.M. Health (Aidshilfe).</div></div>
     </div>
   </section>
 
@@ -633,6 +764,26 @@
       {
         keys: ['tobias', 'veranstalter', 'organisator', 'wer steckt', 'gründer', 'wer ist'],
         answer: `F³ wurde von Tobias Kuschel gegründet.\n\n📧 tobi.kuschel@web.de\n📱 Telegram: @Kusc_190190\n🔗 Joyclub: @F_TheNextVibe\n\nBei persönlichen Fragen einfach direkt melden!`
+      },
+      {
+        keys: ['kristina', 'team', 'rechte hand', 'wer macht', 'wer organisiert'],
+        answer: `Das F³ Team:\n\n🔥 Tobias – Gründer & Kopf von FriendsFuckFriends\nMindestens 80% der Gäste kennen sich, ca. 80 Gäste, das Original.\n\n💜 Kristina – Rechte Hand, leitet Friendly Fucks\nKleinere, intimere Events in neuen Städten (unter 50 Gäste). Ihr Herzstück: Ulm und darüber hinaus.`
+      },
+      {
+        keys: ['unterschied', 'friendly fucks', 'friendsfuckfriends', 'format', 'unterschied zwischen'],
+        answer: `Der Unterschied:\n\n🔥 FriendsFuckFriends (Tobias)\n• Ca. 80 Gäste\n• Mindestens 80% kennen sich\n• Das Kern-Format, größere Events\n• z.B. Wiesbaden, Wülfrath\n\n💜 Friendly Fucks (Kristina)\n• Unter 50 Gäste\n• Kleinere, intimere Atmosphäre\n• Neue Städte erkunden\n• Sauna, Whirlpool, Dare Game Night\n• z.B. Ulm\n\nGleiche Werte, verschiedene Vibes!`
+      },
+      {
+        keys: ['voting kanal', 'voting regeln', 'screenshot', 'diskret', 'vertraulich'],
+        answer: `Voting-Kanal Regeln:\n\n🔒 Was im Kanal besprochen wird, bleibt im Kanal.\n📵 Keine Screenshots, keine Namen nach außen.\n🔗 Der Einladungslink ist persönlich – nicht weitergeben.\n✅ Entscheidungen der Gruppe sind bindend.\n🚫 Ein Nein braucht keine Erklärung – No means No.\n\nDer Kanal ist ein moderierter Vertrauensraum.`
+      },
+      {
+        keys: ['gesundheit', 'testen', 'test', 'sti', 'gesundheitsamt', 'sam health'],
+        answer: `Gesundheit & Verantwortung bei F³:\n\n🩺 Regelmäßiges Testen (alle 3–6 Monate) ist Teil unserer Community.\n\nKostenlose Optionen:\n• Gesundheitsamt – kostenlos & anonym\n• S.A.M. Health (Aidshilfe) – diskret\n\nRespekt endet nicht auf der Tanzfläche. 🖤`
+      },
+      {
+        keys: ['galerie', 'fotos', 'bilder', 'album', 'impressionen'],
+        answer: `Unsere Fotoalben gibt es auf Joyclub:\n\n📸 F³ Birthday-Bash (24.01.2026)\n📸 Silvester 2025 (31.12.2025)\n📸 F³ Moments\n\n👉 Fotos sind nur für eingeloggte Joyclub-Mitglieder sichtbar.\njoyclub.de/party/13140845.f3.html`
       },
       {
         keys: ['paar', 'paare', 'couple', 'zu zweit', 'mit partner'],
