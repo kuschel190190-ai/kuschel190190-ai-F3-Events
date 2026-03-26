@@ -374,33 +374,7 @@
       <h2 class="section-title">Entdecke unsere <span class="gradient-text">Events</span></h2>
     </div>
     <div class="events-grid" id="eventsGrid">
-      <a href="https://www.joyclub.de/party/13140845.f3.html" target="_blank" class="event-card reveal" data-date="2026-04-04">
-        <div class="event-date">04.04.2026 · Wülfrath</div>
-        <div class="event-title">F³ Wülfrath</div>
-        <div class="event-desc">Der nächste Vibe kommt. Bewirb dich jetzt und sicher dir deinen Platz für eine unvergessliche Nacht.</div>
-        <span class="event-tag">Coming Soon</span>
-      </a>
-      <a href="https://www.joyclub.de/event/1829501.friendsfuckfriends_cum_in_may_wiesbaden.html" target="_blank" class="event-card reveal" data-date="2026-05-15">
-        <div class="event-date">15.05.2026 · Wiesbaden</div>
-        <div class="event-title">Cum in May</div>
-        <div class="event-desc">FriendsFuckFriends – Wiesbaden Edition. Ca. 80 handverlesene Gäste, Ladies' Choice Voting, besonderer Geburtstags-Opener. Qualität vor Quantität.</div>
-        <span class="event-tag">Wiesbaden</span>
-      </a>
-      <a href="https://www.joyclub.de/event/1826058.friendly_fucks.html" target="_blank" class="event-card reveal" data-date="2026-05-30">
-        <div class="event-date">30.05.2026 · Ulm</div>
-        <div class="event-title">Friendly Fucks – Ulm</div>
-        <div class="event-desc">Soft Energy Edition. Sinnlichkeit, Sauna, Whirlpool und ein kuratierter Abend für ca. 40 Gäste – inklusive Dare Game Night.</div>
-        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-          <span class="event-tag">Ulm</span>
-          <span class="event-tag" style="border-color:rgba(0,212,255,0.4);color:var(--cyan);">by Kristina</span>
-        </div>
-      </a>
-      <a href="https://www.joyclub.de/event/1824056.f_mallorca_edition_hot_n_dirty_week_koeln.html" target="_blank" class="event-card reveal" data-date="2026-07-23">
-        <div class="event-date">18.–23.07.2026 · Mallorca</div>
-        <div class="event-title">Mallorca Edition</div>
-        <div class="event-desc">Hot'n Dirty Week – 5 Tage Luxusvilla auf Mallorca. Exklusiv für 12 ausgewählte Gäste. Friends · Fun · Freedom pur.</div>
-        <span class="event-tag">Mallorca</span>
-      </a>
+      <div id="events-loading" style="grid-column:1/-1;text-align:center;color:var(--muted);letter-spacing:0.15em;font-size:0.85rem;padding:3rem 1rem;">Events werden geladen…</div>
     </div>
   </section>
 
@@ -845,7 +819,7 @@
     });
 
     // Auto-archive: move past events to archive automatically
-    (function autoArchive() {
+    function autoArchive() {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const eventsGrid = document.getElementById('eventsGrid');
@@ -865,7 +839,56 @@
       const count = archiveGrid.querySelectorAll('.event-card').length;
       const btn = document.getElementById('archiveBtn');
       if (btn) btn.querySelector('span:first-child').textContent = `Archiv anzeigen (${count})`;
-    })();
+    }
+
+    // Dynamisch Events aus NocoDB laden (via n8n Events API)
+    async function loadEvents() {
+      const grid = document.getElementById('eventsGrid');
+      try {
+        const res = await fetch('https://n8n.f3-events.de/webhook/f3-events-api', {
+          signal: AbortSignal.timeout(8000)
+        });
+        if (!res.ok) throw new Error('API ' + res.status);
+        const events = await res.json();
+
+        if (!Array.isArray(events) || events.length === 0) {
+          grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--muted);padding:2rem;">Aktuell keine Events geplant. <a href="https://www.joyclub.de/party/13140845.f3.html" target="_blank" style="color:var(--pink);">Joyclub besuchen →</a></p>';
+          autoArchive();
+          return;
+        }
+
+        grid.innerHTML = events.map(ev => {
+          const tags = (ev.zusatz && ev.zusatz !== 'auto-synced')
+            ? ev.zusatz.split(',').map(t => t.trim()).filter(Boolean)
+            : [];
+          const tagsHTML = tags.length > 1
+            ? `<div style="display:flex;gap:0.5rem;flex-wrap:wrap;">${tags.map((t,i) => i===0
+                ? `<span class="event-tag">${t}</span>`
+                : `<span class="event-tag" style="border-color:rgba(0,212,255,0.4);color:var(--cyan);">${t}</span>`).join('')}</div>`
+            : `<span class="event-tag">${tags[0] || 'Jetzt anmelden'}</span>`;
+          return `<a href="${ev.link||'#'}" target="_blank" class="event-card reveal" data-date="${ev.isoDatum||''}">
+            <div class="event-date">${ev.datum||''}</div>
+            <div class="event-title">${ev.name||''}</div>
+            <div class="event-desc">${ev.beschreibung||'Jetzt bewerben und dabei sein.'}</div>
+            ${tagsHTML}
+          </a>`;
+        }).join('');
+
+        // Reveal-Animationen für neue Cards registrieren
+        const obs = new IntersectionObserver(entries => {
+          entries.forEach((e, i) => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 60); });
+        }, { threshold: 0.1 });
+        grid.querySelectorAll('.event-card').forEach(c => obs.observe(c));
+
+        autoArchive();
+      } catch (err) {
+        console.warn('Events API nicht erreichbar:', err);
+        grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--muted);padding:2rem;">Events konnten nicht geladen werden. <a href="https://www.joyclub.de/party/13140845.f3.html" target="_blank" style="color:var(--pink);">Direkt auf Joyclub ansehen →</a></p>';
+        autoArchive();
+      }
+    }
+
+    loadEvents();
 
     // Archive toggle
     document.getElementById('archiveBtn').addEventListener('click', function() {
