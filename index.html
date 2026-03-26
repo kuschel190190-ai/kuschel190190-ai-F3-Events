@@ -238,6 +238,44 @@
     #chat-send { background: var(--pink); border: none; border-radius: 3px; padding: 0.55rem 1rem; color: white; cursor: pointer; font-size: 0.9rem; transition: background 0.2s; }
     #chat-send:hover { background: #ff2da0; }
 
+    /* STATS STRIP */
+    .stats-strip { background: rgba(233,30,140,0.06); border-top: 1px solid rgba(233,30,140,0.15); border-bottom: 1px solid rgba(233,30,140,0.15); padding: 1.2rem 4rem; display: flex; justify-content: center; gap: 4rem; flex-wrap: wrap; }
+    .strip-item { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
+    .strip-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; background: linear-gradient(90deg, var(--pink), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; }
+    .strip-lbl { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+
+    /* LIGHTBOX */
+    .lb-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 2000; align-items: center; justify-content: center; }
+    .lb-overlay.open { display: flex; }
+    .lb-overlay img { max-width: 90vw; max-height: 88vh; border-radius: 4px; box-shadow: 0 0 60px rgba(233,30,140,0.3); }
+    .lb-close { position: absolute; top: 1.5rem; right: 2rem; color: white; font-size: 2rem; cursor: pointer; opacity: 0.7; background: none; border: none; transition: opacity 0.2s; }
+    .lb-close:hover { opacity: 1; }
+    .lb-prev, .lb-next { position: absolute; top: 50%; transform: translateY(-50%); color: white; font-size: 2rem; cursor: pointer; opacity: 0.6; background: rgba(0,0,0,0.4); border: none; padding: 1rem 1.2rem; transition: opacity 0.2s; }
+    .lb-prev { left: 1rem; } .lb-next { right: 1rem; }
+    .lb-prev:hover, .lb-next:hover { opacity: 1; }
+    .lb-counter { position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); font-size: 0.75rem; letter-spacing: 0.2em; color: rgba(255,255,255,0.5); }
+
+    /* LOCATION GALLERY */
+    .locations { background: var(--deep); }
+    .location-block { margin-top: 3rem; }
+    .location-block + .location-block { margin-top: 4rem; }
+    .location-header { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.5rem; }
+    .location-name { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.05em; }
+    .location-tag { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; border: 1px solid rgba(0,212,255,0.4); color: var(--cyan); padding: 0.25rem 0.75rem; border-radius: 2px; }
+    .location-desc { font-size: 0.95rem; color: var(--muted); line-height: 1.7; margin-bottom: 1.5rem; max-width: 700px; }
+    .img-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 6px; }
+    .img-grid a { display: block; overflow: hidden; border-radius: 3px; aspect-ratio: 4/3; cursor: pointer; }
+    .img-grid a img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; filter: brightness(0.85); }
+    .img-grid a:hover img { transform: scale(1.06); filter: brightness(1); }
+    .mallorca-card { background: var(--card); border: 1px solid rgba(233,30,140,0.2); border-radius: 4px; overflow: hidden; text-decoration: none; color: var(--white); display: grid; grid-template-columns: 1fr 1fr; transition: border-color 0.3s; }
+    .mallorca-card:hover { border-color: var(--pink); }
+    .mallorca-visual { background: linear-gradient(135deg, rgba(255,107,26,0.3), rgba(233,30,140,0.2), rgba(0,212,255,0.1)); display: flex; align-items: center; justify-content: center; font-size: 4rem; padding: 3rem; }
+    .mallorca-info { padding: 2rem; display: flex; flex-direction: column; gap: 0.8rem; }
+    .mallorca-info h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 0.05em; }
+    .mallorca-info p { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+    .mallorca-info .btn-neon { align-self: flex-start; margin-top: 0.5rem; }
+    @media (max-width: 700px) { .mallorca-card { grid-template-columns: 1fr; } }
+
     /* GALLERY */
     .gallery { background: var(--black); }
     .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
@@ -296,6 +334,7 @@
     <ul class="nav-links">
       <li><a href="#events">Events</a></li>
       <li><a href="#gallery">Galerie</a></li>
+      <li><a href="#locations">Locations</a></li>
       <li><a href="#reviews">Bewertungen</a></li>
       <li><a href="#about">Über uns</a></li>
       <li><a href="#concept">Konzept</a></li>
@@ -318,6 +357,15 @@
     </div>
     <div class="scroll-hint"><span>Scroll</span></div>
   </section>
+
+  <!-- STATS STRIP -->
+  <div class="stats-strip">
+    <div class="strip-item"><span class="strip-num">303</span><span class="strip-lbl">Joyclub Fans</span></div>
+    <div class="strip-item"><span class="strip-num">8.016</span><span class="strip-lbl">Profilbesucher</span></div>
+    <div class="strip-item"><span class="strip-num">77</span><span class="strip-lbl">Bewertungen</span></div>
+    <div class="strip-item"><span class="strip-num">5.0 ★</span><span class="strip-lbl">Ø Bewertung</span></div>
+    <div class="strip-item"><span class="strip-num" id="visit-count">…</span><span class="strip-lbl">Website-Besucher</span></div>
+  </div>
 
   <!-- UPCOMING EVENTS -->
   <section class="events" id="events">
@@ -430,6 +478,82 @@
     </div>
     <p style="margin-top:2rem;font-size:0.8rem;color:var(--muted);letter-spacing:0.1em;">📸 Fotos sind nur für eingeloggte Joyclub-Mitglieder sichtbar.</p>
   </section>
+
+  <!-- LOCATIONS -->
+  <section class="locations" id="locations">
+    <div class="reveal">
+      <p class="section-label">Unsere Locations</p>
+      <h2 class="section-title">Wo der <span class="gradient-text">Vibe passiert.</span></h2>
+    </div>
+
+    <!-- WIESBADEN -->
+    <div class="location-block reveal">
+      <div class="location-header">
+        <span class="location-name">Wiesbaden – SM-Playground</span>
+        <span class="location-tag">Cum in May · 15.05.2026</span>
+      </div>
+      <p class="location-desc">Luxuriöses Spielparadies in Wiesbaden-Schierstein. Designer-Ausstattung, hochwertige Geräte, Außenbereich – der perfekte Rahmen für eine unvergessliche Nacht.</p>
+      <div class="img-grid" id="playground-grid">
+        <a data-lb="playground" data-src="https://dein-fetischhaus.de/assets/images/4/AussenbereichPlayground2-23168164.jpg"><img src="https://dein-fetischhaus.de/assets/images/4/AussenbereichPlayground2-23168164.jpg" alt="Außenbereich" loading="lazy"></a>
+        <a data-lb="playground" data-src="https://dein-fetischhaus.de/assets/images/6/SMP_01-e4ff2826.jpg"><img src="https://dein-fetischhaus.de/assets/images/6/SMP_01-e4ff2826.jpg" alt="SM Playground" loading="lazy"></a>
+        <a data-lb="playground" data-src="https://dein-fetischhaus.de/assets/images/3/SMP_02-f37e9f23.jpg"><img src="https://dein-fetischhaus.de/assets/images/3/SMP_02-f37e9f23.jpg" alt="SM Playground" loading="lazy"></a>
+        <a data-lb="playground" data-src="https://dein-fetischhaus.de/assets/images/0/SMP_03-c7aab5b0.jpg"><img src="https://dein-fetischhaus.de/assets/images/0/SMP_03-c7aab5b0.jpg" alt="SM Playground" loading="lazy"></a>
+        <a data-lb="playground" data-src="https://dein-fetischhaus.de/assets/images/9/SMP_05-cebd7389.jpg"><img src="https://dein-fetischhaus.de/assets/images/9/SMP_05-cebd7389.jpg" alt="SM Playground" loading="lazy"></a>
+        <a data-lb="playground" data-src="https://dein-fetischhaus.de/assets/images/2/SMP_06-b3850ee2.jpg"><img src="https://dein-fetischhaus.de/assets/images/2/SMP_06-b3850ee2.jpg" alt="SM Playground" loading="lazy"></a>
+        <a data-lb="playground" data-src="https://dein-fetischhaus.de/assets/images/0/SMP_07-f7ff5d80.jpg"><img src="https://dein-fetischhaus.de/assets/images/0/SMP_07-f7ff5d80.jpg" alt="SM Playground" loading="lazy"></a>
+        <a data-lb="playground" data-src="https://dein-fetischhaus.de/assets/images/e/SMP_08-5a70264e.jpg"><img src="https://dein-fetischhaus.de/assets/images/e/SMP_08-5a70264e.jpg" alt="SM Playground" loading="lazy"></a>
+      </div>
+    </div>
+
+    <!-- WIESBADEN REFUGIUM -->
+    <div class="location-block reveal">
+      <div class="location-header">
+        <span class="location-name">Wiesbaden – SM-Refugium</span>
+        <span class="location-tag">Exklusive Suite</span>
+      </div>
+      <p class="location-desc">Exklusive Suite mit modernem Bad, Walk-in-Shower, Loungebereich und Whirlpool im Außenbereich. Perfekt für intensive und intime Momente.</p>
+      <div class="img-grid" id="refugium-grid">
+        <a data-lb="refugium" data-src="https://dein-fetischhaus.de/assets/images/e/Refugium01-34a44b8e.jpg"><img src="https://dein-fetischhaus.de/assets/images/e/Refugium01-34a44b8e.jpg" alt="Refugium" loading="lazy"></a>
+        <a data-lb="refugium" data-src="https://dein-fetischhaus.de/assets/images/8/Refugium101-1f5632a8.jpg"><img src="https://dein-fetischhaus.de/assets/images/8/Refugium101-1f5632a8.jpg" alt="Refugium" loading="lazy"></a>
+        <a data-lb="refugium" data-src="https://dein-fetischhaus.de/assets/images/d/Refugium103-3012a1cd.jpg"><img src="https://dein-fetischhaus.de/assets/images/d/Refugium103-3012a1cd.jpg" alt="Refugium" loading="lazy"></a>
+        <a data-lb="refugium" data-src="https://dein-fetischhaus.de/assets/images/3/Refugium105-83b606d3.jpg"><img src="https://dein-fetischhaus.de/assets/images/3/Refugium105-83b606d3.jpg" alt="Refugium" loading="lazy"></a>
+        <a data-lb="refugium" data-src="https://dein-fetischhaus.de/assets/images/a/IMG_4019-f628c8ba.jpg"><img src="https://dein-fetischhaus.de/assets/images/a/IMG_4019-f628c8ba.jpg" alt="Whirlpool" loading="lazy"></a>
+        <a data-lb="refugium" data-src="https://dein-fetischhaus.de/assets/images/6/IMG_4039-9b82f866.jpg"><img src="https://dein-fetischhaus.de/assets/images/6/IMG_4039-9b82f866.jpg" alt="Außenbereich" loading="lazy"></a>
+        <a data-lb="refugium" data-src="https://dein-fetischhaus.de/assets/images/4/IMG_4089-f69f6074.jpg"><img src="https://dein-fetischhaus.de/assets/images/4/IMG_4089-f69f6074.jpg" alt="Refugium" loading="lazy"></a>
+        <a data-lb="refugium" data-src="https://dein-fetischhaus.de/assets/images/d/IMG_5092-449bff2d.jpg"><img src="https://dein-fetischhaus.de/assets/images/d/IMG_5092-449bff2d.jpg" alt="Refugium" loading="lazy"></a>
+      </div>
+    </div>
+
+    <!-- MALLORCA -->
+    <div class="location-block reveal">
+      <div class="location-header">
+        <span class="location-name">Mallorca – Luxusvilla</span>
+        <span class="location-tag">Hot'n Dirty Week · 18.–23.07.2026</span>
+      </div>
+      <p class="location-desc">Casa Campillos in Llucmajor – eine exklusive Finca für 12 ausgewählte Gäste. 5 Tage, Sonne, Pool und pure Freiheit auf Mallorca.</p>
+      <a href="https://www.booking.com/hotel/es/casa-campillos-llucmajor1.de.html" target="_blank" class="mallorca-card">
+        <div class="mallorca-visual">🌴</div>
+        <div class="mallorca-info">
+          <h3>Casa Campillos</h3>
+          <p>Llucmajor, Mallorca · Luxuriöse Finca mit Pool, großzügigen Außenbereichen und exklusivem Ambiente für 12 Gäste.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.5rem;">
+            <span style="font-size:0.75rem;color:var(--cyan);">📅 18.–23. Juli 2026</span>
+            <span style="font-size:0.75rem;color:var(--pink);">👥 12 Gäste exklusiv</span>
+          </div>
+          <span class="btn-neon btn-outline-cyan" style="font-size:0.75rem;padding:0.6rem 1.5rem;margin-top:1rem;">Location ansehen →</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- LIGHTBOX -->
+  <div class="lb-overlay" id="lb-overlay">
+    <button class="lb-close" id="lb-close">✕</button>
+    <button class="lb-prev" id="lb-prev">‹</button>
+    <img id="lb-img" src="" alt="" />
+    <button class="lb-next" id="lb-next">›</button>
+    <span class="lb-counter" id="lb-counter"></span>
+  </div>
 
   <!-- REVIEWS -->
   <section class="reviews" id="reviews">
@@ -628,6 +752,8 @@
       <li><a href="https://www.joyclub.de/party/13140845.f3.html" target="_blank">Joyclub</a></li>
       <li><a href="https://www.instagram.com" target="_blank">Instagram</a></li>
       <li><a href="mailto:tobi.kuschel@web.de">Kontakt</a></li>
+      <li><a href="impressum.html">Impressum</a></li>
+      <li><a href="datenschutz.html">Datenschutz</a></li>
     </ul>
     <p class="footer-copy">© 2026 F³ – The Next Vibe</p>
   </footer>
@@ -674,6 +800,43 @@
       });
     }, { threshold: 0.1 });
     reveals.forEach(el => observer.observe(el));
+
+    // Visitor counter
+    fetch('https://api.counterapi.dev/v1/f3-events/visits/up')
+      .then(r => r.json())
+      .then(d => { document.getElementById('visit-count').textContent = (d.count||0).toLocaleString('de-DE'); })
+      .catch(() => { document.getElementById('visit-count').textContent = '–'; });
+
+    // Lightbox
+    const lbOverlay = document.getElementById('lb-overlay');
+    const lbImg = document.getElementById('lb-img');
+    const lbCounter = document.getElementById('lb-counter');
+    let lbItems = [], lbIdx = 0;
+
+    document.querySelectorAll('[data-lb]').forEach(el => {
+      el.addEventListener('click', e => {
+        e.preventDefault();
+        const group = el.dataset.lb;
+        lbItems = [...document.querySelectorAll(`[data-lb="${group}"]`)].map(a => a.dataset.src);
+        lbIdx = lbItems.indexOf(el.dataset.src);
+        showLb();
+      });
+    });
+    function showLb() {
+      lbImg.src = lbItems[lbIdx];
+      lbCounter.textContent = `${lbIdx + 1} / ${lbItems.length}`;
+      lbOverlay.classList.add('open');
+    }
+    document.getElementById('lb-close').addEventListener('click', () => lbOverlay.classList.remove('open'));
+    document.getElementById('lb-prev').addEventListener('click', () => { lbIdx = (lbIdx - 1 + lbItems.length) % lbItems.length; showLb(); });
+    document.getElementById('lb-next').addEventListener('click', () => { lbIdx = (lbIdx + 1) % lbItems.length; showLb(); });
+    lbOverlay.addEventListener('click', e => { if (e.target === lbOverlay) lbOverlay.classList.remove('open'); });
+    document.addEventListener('keydown', e => {
+      if (!lbOverlay.classList.contains('open')) return;
+      if (e.key === 'ArrowRight') { lbIdx = (lbIdx + 1) % lbItems.length; showLb(); }
+      if (e.key === 'ArrowLeft') { lbIdx = (lbIdx - 1 + lbItems.length) % lbItems.length; showLb(); }
+      if (e.key === 'Escape') lbOverlay.classList.remove('open');
+    });
 
     // Archive toggle
     document.getElementById('archiveBtn').addEventListener('click', function() {
