@@ -854,10 +854,13 @@
             ? `<span class="event-tag">${t}</span>`
             : `<span class="event-tag" style="border-color:rgba(0,212,255,0.4);color:var(--cyan);">${t}</span>`).join('')}</div>`
         : `<span class="event-tag">${tags[0] || (extraClass.includes('archived') ? 'Abgeschlossen' : 'Jetzt anmelden')}</span>`;
+      const desc = ev.beschreibung
+        ? (ev.beschreibung.length > 90 ? ev.beschreibung.slice(0, 90).trimEnd() + '…' : ev.beschreibung)
+        : 'Jetzt bewerben und dabei sein.';
       return `<a href="${ev.link||'#'}" target="_blank" class="event-card reveal ${extraClass}" data-date="${ev.isoDatum||''}">
         <div class="event-date">${ev.datum||''}</div>
         <div class="event-title">${ev.name||''}</div>
-        <div class="event-desc">${ev.beschreibung||'Jetzt bewerben und dabei sein.'}</div>
+        <div class="event-desc">${desc}</div>
         ${tagsHTML}
       </a>`;
     }
@@ -873,18 +876,27 @@
         const events = await res.json();
         if (!Array.isArray(events)) throw new Error('Ungültige Antwort');
 
+        // Duplikate entfernen (gleicher EventLink = gleicher Event)
+        const seen = new Set();
+        const unique = events.filter(ev => {
+          const key = ev.link || ev.name;
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+
         // Für Chatbot speichern
-        window._f3Events = events;
+        window._f3Events = unique;
 
         const today = new Date(); today.setHours(0,0,0,0);
 
-        const upcoming = events.filter(ev => {
+        const upcoming = unique.filter(ev => {
           if (ev.status === 'inaktiv') return false;
           if (!ev.isoDatum) return true;
           return new Date(ev.isoDatum) >= today;
         });
 
-        const archive = events.filter(ev => {
+        const archive = unique.filter(ev => {
           if (ev.status === 'inaktiv') return true;
           if (!ev.isoDatum) return false;
           return new Date(ev.isoDatum) < today;
