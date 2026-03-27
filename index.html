@@ -546,7 +546,7 @@
       <div class="reviews-score">
         <div class="big-num">5.0</div>
         <div class="stars">★★★★★</div>
-        <div class="count">77 Bewertungen auf Joyclub</div>
+        <div class="count" id="stat-review-count">77 Bewertungen auf Joyclub</div>
       </div>
     </div>
     <div class="reviews-grid">
@@ -592,7 +592,7 @@
       </div>
     </div>
     <div class="reviews-cta reveal">
-      <a href="https://www.joyclub.de/party/erfahrungen/13140845.f3.html" target="_blank">Alle 77 Bewertungen auf Joyclub lesen →</a>
+      <a href="https://www.joyclub.de/party/erfahrungen/13140845.f3.html" target="_blank" id="stat-review-link">Alle 77 Bewertungen auf Joyclub lesen →</a>
     </div>
   </section>
 
@@ -843,45 +843,75 @@
     }
 
     // Dynamisch Events aus NocoDB laden (via n8n Events API)
+    window._f3Events = [];
+
+    function buildEventCard(ev, extraClass = '') {
+      const tags = (ev.zusatz && ev.zusatz !== 'auto-synced')
+        ? ev.zusatz.split(',').map(t => t.trim()).filter(Boolean)
+        : [];
+      const tagsHTML = tags.length > 1
+        ? `<div style="display:flex;gap:0.5rem;flex-wrap:wrap;">${tags.map((t,i) => i===0
+            ? `<span class="event-tag">${t}</span>`
+            : `<span class="event-tag" style="border-color:rgba(0,212,255,0.4);color:var(--cyan);">${t}</span>`).join('')}</div>`
+        : `<span class="event-tag">${tags[0] || (extraClass.includes('archived') ? 'Abgeschlossen' : 'Jetzt anmelden')}</span>`;
+      return `<a href="${ev.link||'#'}" target="_blank" class="event-card reveal ${extraClass}" data-date="${ev.isoDatum||''}">
+        <div class="event-date">${ev.datum||''}</div>
+        <div class="event-title">${ev.name||''}</div>
+        <div class="event-desc">${ev.beschreibung||'Jetzt bewerben und dabei sein.'}</div>
+        ${tagsHTML}
+      </a>`;
+    }
+
     async function loadEvents() {
       const grid = document.getElementById('eventsGrid');
+      const archiveGrid = document.getElementById('archiveGrid');
       try {
         const res = await fetch('https://n8n.f3-events.de/webhook/f3-events-api', {
           signal: AbortSignal.timeout(8000)
         });
         if (!res.ok) throw new Error('API ' + res.status);
         const events = await res.json();
+        if (!Array.isArray(events)) throw new Error('Ungültige Antwort');
 
-        if (!Array.isArray(events) || events.length === 0) {
+        // Für Chatbot speichern
+        window._f3Events = events;
+
+        const today = new Date(); today.setHours(0,0,0,0);
+
+        const upcoming = events.filter(ev => {
+          if (ev.status === 'inaktiv') return false;
+          if (!ev.isoDatum) return true;
+          return new Date(ev.isoDatum) >= today;
+        });
+
+        const archive = events.filter(ev => {
+          if (ev.status === 'inaktiv') return true;
+          if (!ev.isoDatum) return false;
+          return new Date(ev.isoDatum) < today;
+        });
+
+        // Kommende Events anzeigen
+        if (upcoming.length === 0) {
           grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--muted);padding:2rem;">Aktuell keine Events geplant. <a href="https://www.joyclub.de/party/13140845.f3.html" target="_blank" style="color:var(--pink);">Joyclub besuchen →</a></p>';
-          autoArchive();
-          return;
+        } else {
+          grid.innerHTML = upcoming.map(ev => buildEventCard(ev)).join('');
+          const obs = new IntersectionObserver(entries => {
+            entries.forEach((e, i) => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 60); });
+          }, { threshold: 0.1 });
+          grid.querySelectorAll('.event-card').forEach(c => obs.observe(c));
         }
 
-        grid.innerHTML = events.map(ev => {
-          const tags = (ev.zusatz && ev.zusatz !== 'auto-synced')
-            ? ev.zusatz.split(',').map(t => t.trim()).filter(Boolean)
-            : [];
-          const tagsHTML = tags.length > 1
-            ? `<div style="display:flex;gap:0.5rem;flex-wrap:wrap;">${tags.map((t,i) => i===0
-                ? `<span class="event-tag">${t}</span>`
-                : `<span class="event-tag" style="border-color:rgba(0,212,255,0.4);color:var(--cyan);">${t}</span>`).join('')}</div>`
-            : `<span class="event-tag">${tags[0] || 'Jetzt anmelden'}</span>`;
-          return `<a href="${ev.link||'#'}" target="_blank" class="event-card reveal" data-date="${ev.isoDatum||''}">
-            <div class="event-date">${ev.datum||''}</div>
-            <div class="event-title">${ev.name||''}</div>
-            <div class="event-desc">${ev.beschreibung||'Jetzt bewerben und dabei sein.'}</div>
-            ${tagsHTML}
-          </a>`;
-        }).join('');
+        // Vergangene/inaktive Events dynamisch ins Archiv einfügen (vor den hardcodierten)
+        if (archive.length > 0) {
+          const archiveHTML = archive.map(ev => buildEventCard(ev, 'archived')).join('');
+          archiveGrid.insertAdjacentHTML('afterbegin', archiveHTML);
+        }
 
-        // Reveal-Animationen für neue Cards registrieren
-        const obs = new IntersectionObserver(entries => {
-          entries.forEach((e, i) => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 60); });
-        }, { threshold: 0.1 });
-        grid.querySelectorAll('.event-card').forEach(c => obs.observe(c));
+        // Archiv-Button-Zähler aktualisieren
+        const count = archiveGrid.querySelectorAll('.event-card').length;
+        const btn = document.getElementById('archiveBtn');
+        if (btn) btn.querySelector('span:first-child').textContent = `Archiv anzeigen (${count})`;
 
-        autoArchive();
       } catch (err) {
         console.warn('Events API nicht erreichbar:', err);
         grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--muted);padding:2rem;">Events konnten nicht geladen werden. <a href="https://www.joyclub.de/party/13140845.f3.html" target="_blank" style="color:var(--pink);">Direkt auf Joyclub ansehen →</a></p>';
@@ -904,6 +934,13 @@
         if (s.besucher)    document.getElementById('stat-besucher').textContent    = fmt(s.besucher);
         if (s.bewertungen) document.getElementById('stat-bewertungen').textContent = fmt(s.bewertungen);
         if (s.rating)      document.getElementById('stat-rating').textContent      = s.rating.toFixed(1).replace('.', ',') + ' ★';
+        if (s.bewertungen) {
+          const n = s.bewertungen.toLocaleString('de-DE');
+          const rc = document.getElementById('stat-review-count');
+          const rl = document.getElementById('stat-review-link');
+          if (rc) rc.textContent = `${n} Bewertungen auf Joyclub`;
+          if (rl) rl.textContent = `Alle ${n} Bewertungen auf Joyclub lesen →`;
+        }
       } catch (err) {
         console.warn('Stats API nicht erreichbar:', err);
         // Fallback: hardcoded Werte bleiben sichtbar
@@ -974,12 +1011,12 @@
         answer: `🌴 F³ Mallorca Edition – Hot'n Dirty Week\n\n📅 18.–23. Juli 2026 (5 Tage)\n📍 Luxusvilla auf Mallorca\n👥 Exklusiv für nur 12 ausgewählte Gäste\n🏊 All-Inclusive Rundum-Erfahrung\n\n💶 €410 p.P. / €810 pro Paar\n(€400/€800 für Premium-Mitglieder)\n\nBewerbung: kurzes Foto + persönliche Zeilen, warum du dabei sein willst.`
       },
       {
-        keys: ['wülfrath', 'april', 'nächstes event', 'nächste party'],
-        answer: `🎉 F³ Wülfrath\n\n📅 04. April 2026\n📍 Wülfrath\n\nDetails folgen – jetzt schon auf Joyclub bewerben und keinen Platz verpassen!\n👉 joyclub.de/party/13140845.f3.html`
-      },
-      {
-        keys: ['welche events', 'was gibt es', 'kommende', 'upcoming', 'alle events', 'übersicht'],
-        answer: `Unsere nächsten Events:\n\n📅 04.04.2026 – F³ Wülfrath\n📅 15.05.2026 – Cum in May (Wiesbaden)\n📅 30.05.2026 – Friendly Fucks (Ulm)\n📅 18.–23.07.2026 – Mallorca Edition\n\nAlle Details & Anmeldung auf Joyclub! 🔥`
+        keys: ['welche events', 'was gibt es', 'kommende', 'upcoming', 'alle events', 'übersicht', 'nächstes event', 'nächste party'],
+        answer: () => {
+          const evs = (window._f3Events || []).filter(e => e.status !== 'inaktiv');
+          if (!evs.length) return `Schau direkt auf Joyclub für aktuelle Events:\n👉 joyclub.de/party/13140845.f3.html`;
+          return `Unsere nächsten Events:\n\n` + evs.map(e => `📅 ${e.datum} – ${e.name}`).join('\n') + `\n\nAlle Details & Anmeldung auf Joyclub! 🔥`;
+        }
       },
       {
         keys: ['foto', 'gesichtsfoto', 'bild', 'photo'],
@@ -1027,14 +1064,19 @@
       },
       {
         keys: ['bewertung', 'erfahrung', 'feedback', 'rezension', 'review'],
-        answer: `F³ hat auf Joyclub durchgehend 5 von 5 Sternen! ⭐⭐⭐⭐⭐\n\nÜber 77 Bewertungen – hier ein paar O-Töne:\n\n💬 "Gute Gästeliste, gute Stimmung, gut gefickt – was will man mehr"\n💬 "Top Gäste, Top Orga, Top Stimmung, Top Party"\n💬 "Super Location, coole Leute und definitiv ein unvergesslicher Abend"\n\n👉 Alle Bewertungen: joyclub.de/party/erfahrungen/13140845.f3.html`
+        answer: () => {
+          const n = document.getElementById('stat-bewertungen')?.textContent || '77';
+          return `F³ hat auf Joyclub durchgehend 5 von 5 Sternen! ⭐⭐⭐⭐⭐\n\nÜber ${n} Bewertungen – hier ein paar O-Töne:\n\n💬 "Gute Gästeliste, gute Stimmung, gut gefickt – was will man mehr"\n💬 "Top Gäste, Top Orga, Top Stimmung, Top Party"\n💬 "Super Location, coole Leute und definitiv ein unvergesslicher Abend"\n\n👉 Alle Bewertungen: joyclub.de/party/erfahrungen/13140845.f3.html`;
+        }
       }
     ];
 
     function findAnswer(text) {
       const lower = text.toLowerCase();
       for (const entry of kb) {
-        if (entry.keys.some(k => lower.includes(k))) return entry.answer;
+        if (entry.keys.some(k => lower.includes(k))) {
+          return typeof entry.answer === 'function' ? entry.answer() : entry.answer;
+        }
       }
       return null;
     }
