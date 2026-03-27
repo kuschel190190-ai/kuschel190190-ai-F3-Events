@@ -81,6 +81,10 @@
     .event-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 0.05em; margin-bottom: 0.8rem; }
     .event-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.6; margin-bottom: 1.5rem; }
     .event-tag { display: inline-block; padding: 0.25rem 0.75rem; font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; border: 1px solid rgba(233,30,140,0.4); color: var(--pink); border-radius: 2px; }
+    .event-stats { display: flex; flex-wrap: wrap; gap: 0.6rem 1.2rem; margin-top: 1rem; padding-top: 0.8rem; border-top: 1px solid rgba(255,255,255,0.06); }
+    .event-stat { display: flex; flex-direction: column; align-items: center; gap: 0.1rem; min-width: 36px; }
+    .event-stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; line-height: 1; color: var(--white); }
+    .event-stat-lbl { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
 
     /* ARCHIVE */
     .archive { background: var(--black); padding: 4rem; }
@@ -857,11 +861,23 @@
       const desc = ev.beschreibung
         ? (ev.beschreibung.length > 90 ? ev.beschreibung.slice(0, 90).trimEnd() + '…' : ev.beschreibung)
         : 'Jetzt bewerben und dabei sein.';
+      const hasStats = ev.angemeldet || ev.nichtBestaetigt || ev.vorgemerkt || ev.aufrufe || ev.maenner || ev.frauen || ev.paare;
+      const statsHTML = hasStats ? `
+        <div class="event-stats">
+          ${ev.angemeldet      ? `<div class="event-stat"><span class="event-stat-val">${ev.angemeldet}</span><span class="event-stat-lbl">Angemeldet</span></div>` : ''}
+          ${ev.nichtBestaetigt ? `<div class="event-stat"><span class="event-stat-val">${ev.nichtBestaetigt}</span><span class="event-stat-lbl">Unbestätigt</span></div>` : ''}
+          ${ev.vorgemerkt      ? `<div class="event-stat"><span class="event-stat-val">${ev.vorgemerkt}</span><span class="event-stat-lbl">Vorgemerkt</span></div>` : ''}
+          ${ev.aufrufe         ? `<div class="event-stat"><span class="event-stat-val" style="color:var(--cyan)">${ev.aufrufe}</span><span class="event-stat-lbl">Aufrufe</span></div>` : ''}
+          ${ev.maenner         ? `<div class="event-stat"><span class="event-stat-val">${ev.maenner}</span><span class="event-stat-lbl">Männer</span></div>` : ''}
+          ${ev.frauen          ? `<div class="event-stat"><span class="event-stat-val">${ev.frauen}</span><span class="event-stat-lbl">Frauen</span></div>` : ''}
+          ${ev.paare           ? `<div class="event-stat"><span class="event-stat-val">${ev.paare}</span><span class="event-stat-lbl">Paare</span></div>` : ''}
+        </div>` : '';
       return `<a href="${ev.link||'#'}" target="_blank" class="event-card reveal ${extraClass}" data-date="${ev.isoDatum||''}">
         <div class="event-date">${ev.datum||''}</div>
         <div class="event-title">${ev.name||''}</div>
         <div class="event-desc">${desc}</div>
         ${tagsHTML}
+        ${statsHTML}
       </a>`;
     }
 
