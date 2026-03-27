@@ -81,8 +81,9 @@
     .event-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 0.05em; margin-bottom: 0.8rem; }
     .event-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.6; margin-bottom: 1.5rem; }
     .event-tag { display: inline-block; padding: 0.25rem 0.75rem; font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; border: 1px solid rgba(233,30,140,0.4); color: var(--pink); border-radius: 2px; }
-    .event-img-wrap { display: flex; justify-content: center; margin-bottom: 1.2rem; }
-    .event-img { width: 100px; height: 100px; border-radius: 50%; object-fit: contain; background: #0a0a10; border: 2px solid rgba(233,30,140,0.4); box-shadow: 0 0 16px rgba(233,30,140,0.25); display: block; }
+    .event-card.has-bild { background-size: cover; background-position: center; }
+    .event-card.has-bild::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(6,6,8,0.45) 0%, rgba(6,6,8,0.82) 55%, rgba(6,6,8,0.97) 100%); z-index: 0; }
+    .event-card.has-bild > * { position: relative; z-index: 1; }
     .event-stats { display: flex; flex-wrap: wrap; gap: 0.6rem 1.2rem; margin-top: 1rem; padding-top: 0.8rem; border-top: 1px solid rgba(255,255,255,0.06); }
     .event-stat { display: flex; flex-direction: column; align-items: center; gap: 0.1rem; min-width: 36px; }
     .event-stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; line-height: 1; color: var(--white); }
@@ -874,9 +875,9 @@
           ${ev.frauen          ? `<div class="event-stat"><span class="event-stat-val">${ev.frauen}</span><span class="event-stat-lbl">Frauen</span></div>` : ''}
           ${ev.paare           ? `<div class="event-stat"><span class="event-stat-val">${ev.paare}</span><span class="event-stat-lbl">Paare</span></div>` : ''}
         </div>` : '';
-      const imgHTML = ev.bild ? `<div class="event-img-wrap"><img class="event-img" src="${ev.bild}" alt="${ev.name||''}" loading="lazy"></div>` : '';
-      return `<a href="${ev.link||'#'}" target="_blank" class="event-card reveal ${extraClass}" data-date="${ev.isoDatum||''}">
-        ${imgHTML}
+      const bildStyle = ev.bild ? ` style="background-image:url('${ev.bild}')"` : '';
+      const bildClass = ev.bild ? ' has-bild' : '';
+      return `<a href="${ev.link||'#'}" target="_blank" class="event-card reveal ${extraClass}${bildClass}" data-date="${ev.isoDatum||''}"${bildStyle}>`;
         <div class="event-date">${ev.datum||''}</div>
         <div class="event-title">${ev.name||''}</div>
         <div class="event-desc">${desc}</div>
