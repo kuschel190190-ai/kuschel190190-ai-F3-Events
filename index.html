@@ -131,7 +131,7 @@
 
     .concept { background: var(--deep); }
     .concept-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
-    .concept-card { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 4px; padding: 2.5rem 2rem; transition: border-color 0.3s, transform 0.3s; }
+    .concept-card { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 4px; padding: 2.5rem 2rem; transition: border-color 0.3s, transform 0.3s; display: block; text-decoration: none; color: inherit; }
     .concept-card:hover { border-color: rgba(0,212,255,0.4); transform: translateY(-4px); }
     .concept-icon { font-size: 2.5rem; margin-bottom: 1.5rem; }
     .concept-card h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.05em; margin-bottom: 0.8rem; color: var(--cyan); }
@@ -647,21 +647,21 @@
       <h2 class="section-title">Kein Standard.<br><span class="gradient-text">Nur Vibes.</span></h2>
     </div>
     <div class="concept-grid">
-      <div class="concept-card reveal">
+      <a href="https://www.joyclub.de/party/homepage/13140845-364779.unterschied_zw_friendsfuckfriends.html" target="_blank" class="concept-card reveal">
         <div class="concept-icon">🔥</div>
         <h3>FriendsFuckFriends</h3>
         <p>Das Kern-Format von Tobias. Mindestens 80% der Gäste kennen sich untereinander. Ca. 80 Gäste, handverlesen, Ladies' Choice Voting – das Original.</p>
-      </div>
+      </a>
       <div class="concept-card reveal">
         <div class="concept-icon">💜</div>
         <h3>Friendly Fucks</h3>
         <p>Das kleinere Schwesterformat, geleitet von Kristina. Unter 50 Gäste, neue Städte, intimere Atmosphäre – Sauna, Whirlpool, Dare Game Night. Gleiche Werte, neuer Vibe.</p>
       </div>
-      <div class="concept-card reveal">
+      <a href="https://www.joyclub.de/party/homepage/13140845-364776.ladies_voting_unsere_regeln_klar_fair.html" target="_blank" class="concept-card reveal">
         <div class="concept-icon">👥</div>
         <h3>Ladies' Choice Voting</h3>
         <p>Alle angemeldeten Damen stimmen über Männer & Paare ab. Mindestens 5 Ja-Stimmen oder 50% positive Votes. Ein einzelnes Veto schließt niemanden aus – klar, fair, demokratisch.</p>
-      </div>
+      </a>
       <div class="concept-card reveal">
         <div class="concept-icon">🔒</div>
         <h3>Voting-Regeln</h3>
@@ -672,11 +672,11 @@
         <h3>Safe Space</h3>
         <p>Nein ist Nein – immer und ohne Ausnahme. Null Toleranz für Grenzüberschreitungen. Wer sich daneben benimmt, wird dauerhaft ausgeschlossen.</p>
       </div>
-      <div class="concept-card reveal">
+      <a href="https://www.joyclub.de/party/homepage/13140845-364777.gesundheit_verantwortung_bei_f.html" target="_blank" class="concept-card reveal">
         <div class="concept-icon">🖤</div>
         <h3>Gesundheit & Verantwortung</h3>
         <p>Regelmäßiges Testen ist ein Akt der Selbstverantwortung und des gegenseitigen Respekts. Respekt endet nicht auf der Tanzfläche.</p>
-      </div>
+      </a>
     </div>
   </section>
 
@@ -896,14 +896,15 @@
         const events = await res.json();
         if (!Array.isArray(events)) throw new Error('Ungültige Antwort');
 
-        // Duplikate entfernen (gleicher EventLink = gleicher Event)
-        const seen = new Set();
-        const unique = events.filter(ev => {
-          const key = ev.link || ev.name;
-          if (seen.has(key)) return false;
-          seen.add(key);
-          return true;
+        // Duplikate entfernen – nach Name gruppieren, Eintrag mit meisten Daten behalten
+        const byName = {};
+        events.forEach(ev => {
+          const key = ev.name.trim().toLowerCase();
+          if (!byName[key] || (ev.bild || ev.beschreibung || ev.angemeldet) > (byName[key].bild || byName[key].beschreibung || byName[key].angemeldet)) {
+            byName[key] = ev;
+          }
         });
+        const unique = Object.values(byName);
 
         // Für Chatbot speichern
         window._f3Events = unique;
