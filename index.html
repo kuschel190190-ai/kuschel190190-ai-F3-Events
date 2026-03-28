@@ -877,7 +877,7 @@
         </div>` : '';
       const bildStyle = ev.bild ? ` style="background-image:url('${ev.bild}')"` : '';
       const bildClass = ev.bild ? ' has-bild' : '';
-      return `<a href="${ev.link||'#'}" target="_blank" class="event-card reveal ${extraClass}${bildClass}" data-date="${ev.isoDatum||''}"${bildStyle}>`;
+      return `<a href="${ev.link||'#'}" target="_blank" class="event-card reveal ${extraClass}${bildClass}" data-date="${ev.isoDatum||''}"${bildStyle}>
         <div class="event-date">${ev.datum||''}</div>
         <div class="event-title">${ev.name||''}</div>
         <div class="event-desc">${desc}</div>
