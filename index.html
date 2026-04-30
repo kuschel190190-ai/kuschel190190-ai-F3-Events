@@ -801,8 +801,10 @@
     </div>
     <span id="music-label">F³ Vibe</span>
   </div>
-  <!-- YouTube Hintergrundplayer (versteckt) -->
-  <div id="yt-player" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden;top:-9999px;left:-9999px;"></div>
+  <!-- YouTube Hintergrundplayer (unsichtbar per scale:0) -->
+  <div style="position:fixed;top:0;left:0;transform:scale(0);transform-origin:0 0;opacity:0;pointer-events:none;" aria-hidden="true">
+    <div id="yt-player"></div>
+  </div>
 
   <!-- CHATBOT WIDGET -->
   <button id="chat-btn" aria-label="Chat öffnen">
